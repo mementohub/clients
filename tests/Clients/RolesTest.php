@@ -1,13 +1,13 @@
 <?php
 
-namespace IMemento\SDK\Tests;
+namespace IMemento\SDK\Tests\Clients;
 
 use IMemento\SDK\AbstractClient;
 use IMemento\SDK\Roles;
 use IMemento\SDK\Responses\CollectionResponse;
 use IMemento\SDK\Responses\JsonResponse;
 
-class RolesTest extends ClientTestCase
+class RolesTest extends TestCase
 {
     protected function client(array $responses = []): AbstractClient
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace IMemento\SDK\Tests;
+namespace IMemento\SDK\Tests\Clients;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -10,8 +10,9 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\RequestException;
 use IMemento\SDK\AbstractClient;
+use IMemento\SDK\Tests\TestCase as BaseTestCase;
 
-abstract class ClientTestCase extends TestCase
+abstract class TestCase extends BaseTestCase
 {
 
     protected $history = [];
