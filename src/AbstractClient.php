@@ -80,6 +80,8 @@ abstract class AbstractClient
             array_merge($current[$key], $this->config[$key]);
         }
 
+        // the middleware are being attached after the merge
+        // so that they will be pushed to the desired handler
         $this->addMiddleware($current['handler']);
 
         return $current;
@@ -264,9 +266,10 @@ abstract class AbstractClient
         $shouldFail = $this->shouldFail();
         $request = $this->runtime['async'] ? 'requestAsync' : 'request';
 
+        $client = new GuzzleClient($this->config());
+
         $this->resetRuntime();
 
-        $client = new GuzzleClient($this->config());
         try {
             return $client->{$request}($method, ...$args);
         } catch (GuzzleException $e) {

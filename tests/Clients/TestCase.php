@@ -10,6 +10,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\RequestException;
 use iMemento\Clients\AbstractClient;
 use iMemento\Clients\Tests\TestCase as BaseTestCase;
+use iMemento\SDK\Auth\User;
 use Mockery as m;
 
 abstract class TestCase extends BaseTestCase
@@ -47,8 +48,9 @@ abstract class TestCase extends BaseTestCase
         $helper = m::mock('alias:iMemento\SDK\Auth\Helper');
         $helper->shouldReceive('authenticate')->andReturn('service.token.test');
 
-        $auth = m::mock('alias:iMemento\SDK\Auth\User');
+        $auth = new User();
         $auth->token = 'user.token.test';
+        $this->actingAs($auth);
 
         $this->history = [];
         $history = Middleware::history($this->history);

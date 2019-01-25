@@ -12,6 +12,7 @@ use Mockery as m;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise as PromiseSpace;
 use iMemento\Clients\Responses\JsonResponse;
+use iMemento\SDK\Auth\User;
 
 class ClientTest extends TestCase
 {
@@ -24,8 +25,9 @@ class ClientTest extends TestCase
         $helper = m::mock('alias:iMemento\SDK\Auth\Helper');
         $helper->shouldReceive('authenticate')->andReturn('service.token.test');
 
-        $auth = m::mock('alias:iMemento\SDK\Auth\User');
+        $auth = new User();
         $auth->token = 'user.token.test';
+        $this->actingAs($auth);
 
         $this->history = [];
         $history = Middleware::history($this->history);
@@ -73,23 +75,39 @@ class ClientTest extends TestCase
     /**
      * Authentication behaviour
      */
-    public function codeSamples()
+    public function testDefaultAuthorization()
     {
+        $this->client()->call();
+        $history = $this->history()->pop();
 
-        return;
-        $client = $this->client();
+        $this->assertToken($history['request'], 'service.token.test');
+    }
 
-        // Regular calls
-        $client->call();
+    public function testAsUserAuthorization()
+    {
+        $this->client()->asUser()->call();
+        $history = $this->history()->pop();
 
-        // Unauthenticated calls (for publicly available endpoints)
-        $client->anonymously()->call();
+        $this->assertToken($history['request'], 'user.token.test');    
+    }
 
-        // With custom token (for authenticated users)
-        $client->withToken($token)->call();
+    public function testAsCustomUserAuthorization()
+    {
+        $user = new User();
+        $user->token = 'new.user.token.test';
 
-        // Will use the app credentials
-        $client->asService()->call();
+        $this->client()->as($user)->call();
+        $history = $this->history()->pop();
+
+        $this->assertToken($history['request'], 'new.user.token.test');    
+    }
+
+    public function testCustomTokenAuthorization()
+    {
+        $this->client()->withToken('some.token.test')->call();
+        $history = $this->history()->pop();
+
+        $this->assertToken($history['request'], 'some.token.test');   
     }
 
     /**
@@ -131,4 +149,11 @@ class ClientTest extends TestCase
         }
     }
 
+
+    public function assertToken($request, $challenge)
+    {
+        $header = $request->getHeader('Authorization');
+        $bearer = $header[0];
+        self::assertEquals($bearer, 'Bearer ' . $challenge);
+    }
 }
