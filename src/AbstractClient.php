@@ -217,26 +217,26 @@ abstract class AbstractClient
         ]);
     }
 
-    protected function create($path, array $attributes = [])
+    protected function post($path, array $attributes = [])
     {
         return $this->json()->request('POST', $path, [
             'json' => $attributes
         ]);
     }
 
-    protected function show($path)
+    protected function get($path)
     {
         return $this->json()->request('GET', $path);
     }
 
-    protected function update($path, array $arguments = [])
+    protected function put($path, array $arguments = [])
     {
         return $this->json()->request('PUT', $path, [
             'json' => $arguments
         ]);
     }
 
-    protected function destroy($path)
+    protected function delete($path)
     {
         return $this->json()->request('DELETE', $path);
     }
