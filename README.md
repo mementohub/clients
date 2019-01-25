@@ -1,5 +1,5 @@
-# iMemento SDK
-SDK classes for iMemento Services
+# iMemento Clients
+Client library classes for iMemento Services
 
 ## Installation
 

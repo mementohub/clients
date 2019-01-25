@@ -1,6 +1,6 @@
 <?php
 
-namespace IMemento\SDK;
+namespace iMemento\Clients;
 
 class Roles extends AbstractClient
 {

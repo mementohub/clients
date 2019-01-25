@@ -1,9 +1,9 @@
 <?php
 
-namespace IMemento\SDK\Tests;
+namespace iMemento\Clients\Tests;
 
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use IMemento\SDK\ServiceProvider;
+use iMemento\Clients\ServiceProvider;
 
 class TestCase extends OrchestraTestCase
 {

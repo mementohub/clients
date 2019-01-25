@@ -1,6 +1,6 @@
 {
-    "name": "imemento/sdk",
-    "description": "SDK classes for iMemento Services",
+    "name": "imemento/clients",
+    "description": "Client library classes for iMemento Services",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -11,28 +11,28 @@
     ],
     "require": {
         "php": "^7.0",
-        "illuminate/support": "^5.5",
-        "illuminate/contracts": "^5.5",
+        "illuminate/support": "^5.7.0",
+        "illuminate/contracts": "^5.7.0",
         "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.0",
-        "orchestra/testbench": "^3.7"
+        "orchestra/testbench": "^3.7.0"
     },
     "autoload": {
         "psr-4": {
-            "IMemento\\SDK\\": "src/"
+            "iMemento\\Clients\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "IMemento\\SDK\\Tests\\": "tests/"
+            "iMemento\\Clients\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "IMemento\\SDK\\ServiceProvider"
+                "iMemento\\Clients\\ServiceProvider"
             ]
         }
     }

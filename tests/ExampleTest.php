@@ -1,6 +1,6 @@
 <?php
 
-namespace IMemento\SDK\Tests;
+namespace iMemento\Clients\Tests;
 
 class ExampleTest extends TestCase
 {

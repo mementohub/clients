@@ -1,6 +1,6 @@
 <?php
 
-namespace IMemento\SDK\Responses;
+namespace iMemento\Clients\Responses;
 
 use Illuminate\Support\Collection;
 use GuzzleHttp\Psr7\Response;

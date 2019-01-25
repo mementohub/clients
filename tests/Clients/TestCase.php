@@ -1,6 +1,6 @@
 <?php
 
-namespace IMemento\SDK\Tests\Clients;
+namespace iMemento\Clients\Tests\Clients;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -9,8 +9,8 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\RequestException;
-use IMemento\SDK\AbstractClient;
-use IMemento\SDK\Tests\TestCase as BaseTestCase;
+use iMemento\Clients\AbstractClient;
+use iMemento\Clients\Tests\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {

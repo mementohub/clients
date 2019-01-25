@@ -1,11 +1,11 @@
 <?php
 
-namespace IMemento\SDK\Tests\Clients;
+namespace iMemento\Clients\Tests\Clients;
 
-use IMemento\SDK\AbstractClient;
-use IMemento\SDK\Roles;
-use IMemento\SDK\Responses\CollectionResponse;
-use IMemento\SDK\Responses\JsonResponse;
+use iMemento\Clients\AbstractClient;
+use iMemento\Clients\Roles;
+use iMemento\Clients\Responses\CollectionResponse;
+use iMemento\Clients\Responses\JsonResponse;
 
 class RolesTest extends TestCase
 {

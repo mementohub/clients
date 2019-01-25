@@ -1,6 +1,6 @@
 <?php
 
-namespace IMemento\SDK;
+namespace iMemento\Clients;
 
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 

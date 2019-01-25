@@ -1,6 +1,6 @@
 <?php
 
-namespace IMemento\SDK\Responses;
+namespace iMemento\Clients\Responses;
 
 use GuzzleHttp\Psr7\Response;
 
