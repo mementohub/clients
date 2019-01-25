@@ -12,15 +12,14 @@ use IMemento\SDK\Responses\ErrorResponse;
 
 abstract class AbstractClient
 {
-    protected $client;
+    protected $config;
     protected $resources;
     protected $mode = 'silent';
     private $request_mode = null;
 
     public function __construct(array $config = [])
     {
-        $config = array_merge($this->getConfig(), $config);
-        $this->client = new GuzzleClient($config);
+        $this->config = array_merge($this->getConfig(), $config);
     }
 
     protected function getConfig()
@@ -69,33 +68,33 @@ abstract class AbstractClient
 
     protected function list($path, array $query = [])
     {
-        return $this->collect($this->get($path, [
+        return $this->collect($this->request('GET', $path, [
             'query' => $query
         ]));
     }
 
     protected function create($path, array $attributes = [])
     {
-        return $this->json($this->post($path, [
+        return $this->json($this->request('POST', $path, [
             'json' => $attributes
         ]));
     }
 
     protected function show($path)
     {
-        return $this->json($this->get($path));
+        return $this->json($this->request('GET', $path));
     }
 
     protected function update($path, array $arguments = [])
     {
-        return $this->json($this->put($path, [
+        return $this->json($this->request('PUT', $path, [
             'json' => $arguments
         ]));
     }
 
     protected function destroy($path)
     {
-        return $this->json($this->delete($path));
+        return $this->json($this->request('DELETE', $path));
     }
 
     protected function json(Response $response)
@@ -108,20 +107,13 @@ abstract class AbstractClient
         return new CollectionResponse($response);
     }
 
-    /**
-     * Forward all unkown methods to the Guzzle Client
-     */
-    public function __call($method, $args)
-    {
-        return $this->forwardToGuzzle($method, $args);
-    }
-
-    protected function forwardToGuzzle($method, $args)
+    protected function request($method, ...$args)
     {
         $shouldFail = $this->shouldFail();
         $this->reset();
+        $client = new GuzzleClient($this->config);
         try {
-            return $this->client->{$method}(...$args);
+            return $client->request($method, ...$args);
         } catch (GuzzleException $e) {
             if ($shouldFail) {
                 throw $e;
