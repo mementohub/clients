@@ -2,34 +2,33 @@
 
 namespace IMemento\SDK\Tests;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Exception\RequestException;
+use IMemento\SDK\AbstractClient;
 use IMemento\SDK\Roles;
 use IMemento\SDK\Responses\CollectionResponse;
+use IMemento\SDK\Responses\JsonResponse;
 
-class RolesTest extends TestCase
+class RolesTest extends ClientTestCase
 {
-    protected function roles()
+    protected function client(array $responses = []): AbstractClient
     {
-        $container = [];
-        $history = Middleware::history($container);
-        $mock = new MockHandler([
-            new Response(200, [], '{}')
-        ]);
-
-        $stack = HandlerStack::create($mock);
-        $stack->push($history);
-        return new Roles(['handler' => $stack]);
+        return $this->mockClient(Roles::class, $responses);
     }
 
-    public function testExample()
+    /**
+     * @dataProvider endpointMappingsDataProvider
+     */
+    public function testItMakesTheRightCalls() {
+        return $this->checkEndpointMappings(...func_get_args());
+    }
+
+    public function endpointMappingsDataProvider()
     {
-        $list = $this->roles()->listServices();
-        $this->assertInstanceOf(CollectionResponse::class, $list);
+        return [
+            ['listServices',    [],     'GET',      'services',     CollectionResponse::class],
+            ['createService',   [],     'POST',     'services',     JsonResponse::class],
+            ['showService',     [2],    'GET',      'services/2',   JsonResponse::class],
+            ['updateService',   [2],    'PUT',      'services/2',   JsonResponse::class],
+            ['destroyService',  [2],    'DELETE',   'services/2',   JsonResponse::class],
+        ];
     }
 }
