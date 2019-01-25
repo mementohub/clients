@@ -2,13 +2,44 @@
 
 namespace iMemento\Clients\Tests\Unit;
 
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Request;
 use iMemento\Clients\Tests\TestCase;
+use Mockery as m;
+use GuzzleHttp\Promise\Promise;
+use GuzzleHttp\Promise as PromiseSpace;
+use iMemento\Clients\Responses\JsonResponse;
 
 class ClientTest extends TestCase
 {
-    protected function client(array $config = [])
+    protected function client(array $responses = [])
     {
-        return new ClientStub($config);
+        if (count($responses) == 0) {
+            $responses[] = new Response(200, [], '{}');
+        }
+
+        $helper = m::mock('alias:iMemento\SDK\Auth\Helper');
+        $helper->shouldReceive('authenticate')->andReturn('service.token.test');
+
+        $auth = m::mock('alias:iMemento\SDK\Auth\User');
+        $auth->token = 'user.token.test';
+
+        $this->history = [];
+        $history = Middleware::history($this->history);
+        $mock = new MockHandler($responses);
+
+        $stack = HandlerStack::create($mock);
+        $stack->push($history);
+
+        return new ClientStub(['handler' => $stack]);
+    }
+
+    protected function history()
+    {
+        return collect($this->history);
     }
 
     /**
@@ -44,6 +75,8 @@ class ClientTest extends TestCase
      */
     public function codeSamples()
     {
+
+        return;
         $client = $this->client();
 
         // Regular calls
@@ -62,13 +95,40 @@ class ClientTest extends TestCase
     /**
      * Async behaviour
      */
-    public function otherCodeSamples()
+    public function testAsyncMethod()
     {
         $client = $this->client();
 
-        $client->call();
+        $promise = $client->async()->call();
 
-        $client->async()->call();
+        $this->assertInstanceOf(Promise::class, $promise);
+
+        $response = $promise->wait();
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testMultipleAsyncCalls()
+    {
+        $client = $this->client([
+            new Response(200, [], '{}'),
+            new Response(200, [], '{}'),
+            new Response(200, [], '{}')
+        ]);
+
+        $promises = [
+            $client->async()->call(),
+            $client->async()->call(),
+            $client->async()->call(),
+        ];
+
+        $results = PromiseSpace\settle($promises)->wait();
+
+        $this->assertCount(3, $results);
+
+        foreach ($results as $result) {
+            $this->assertInstanceOf(JsonResponse::class, $result['value']);
+        }
     }
 
 }

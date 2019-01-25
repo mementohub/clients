@@ -4,10 +4,11 @@ namespace iMemento\Clients\Responses;
 
 use Illuminate\Support\Collection;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 
-class CollectionResponse extends Collection
+class CollectionResponse extends Collection implements ResponseInterface
 {
-    use JsonWrapper;
+    use JsonResponseWrapper;
 
     public function __construct(Response $response)
     {

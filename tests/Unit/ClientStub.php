@@ -37,6 +37,6 @@ class ClientStub extends AbstractClient
 
     public function call()
     {
-
+        return $this->json()->request('GET', '');
     }
 }

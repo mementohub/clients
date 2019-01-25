@@ -3,10 +3,11 @@
 namespace iMemento\Clients\Responses;
 
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 
-class JsonResponse
+class JsonResponse implements ResponseInterface
 {
-    use JsonWrapper;
+    use JsonResponseWrapper;
 
     protected $attributes;
 

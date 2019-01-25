@@ -6,20 +6,27 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Promise\Promise;
+use GuzzleHttp\HandlerStack;
 use iMemento\Clients\Responses\CollectionResponse;
 use iMemento\Clients\Responses\JsonResponse;
 use iMemento\Clients\Responses\ErrorResponse;
-use Illuminate\Contracts\Auth\Authenticatable;
+use iMemento\SDK\Auth\User;
+use GuzzleHttp\Middleware;
+use iMemento\Clients\Handlers\MultiHandler;
 
 abstract class AbstractClient
 {
-    protected $mode = 'critical';   // critical || silent
+    protected $mode = 'critical';           // critical || silent
 
     protected $authorization = 'service';   // none || user || service
 
     protected $config = [];
 
     protected $runtime = [];
+
+    protected $middleware = [];
 
     public function __construct(array $config = [])
     {
@@ -47,9 +54,14 @@ abstract class AbstractClient
 
     protected function config()
     {
+        $stack = new HandlerStack();
+        $handler = resolve(MultiHandler::class);
+        $stack->setHandler($handler);
+
         $current = [
             'base_uri' => $this->getBaseUri(),
             RequestOptions::HEADERS => $this->getHeaders(),
+            'handler'   => $stack,
         ];
 
         // merging the config received in the constructor
@@ -67,6 +79,8 @@ abstract class AbstractClient
             }
             array_merge($current[$key], $this->config[$key]);
         }
+
+        $this->addMiddleware($current['handler']);
 
         return $current;
     }
@@ -92,6 +106,15 @@ abstract class AbstractClient
         return ($value !== 'none'); 
     }
 
+    protected function addMiddleware($stack)
+    {
+        foreach ($this->middleware as $name => $middleware) {
+            $stack->remove($name);
+            $stack->push($middleware, $name);
+        }
+        $this->middleware = [];
+    }
+
     public function anonymously()
     {
         $this->runtime['authorization']['requested'] = 'none';
@@ -110,7 +133,7 @@ abstract class AbstractClient
         return $this;
     }
 
-    public function as(Authenticatable $user)
+    public function as(User $user)
     {
         return $this->withToken($user->token);
     }
@@ -130,10 +153,10 @@ abstract class AbstractClient
                 return $this->runtime['token'];
                 break;
             case 'user':
-                return 'user.token';
+                return auth()->user()->token;
                 break;
             case 'service':
-                return 'service.token';
+                return \iMemento\SDK\Auth\Helper::authenticate();
                 break;
             default:
                 return '';
@@ -145,6 +168,7 @@ abstract class AbstractClient
     public function async()
     {
         $this->runtime['async'] = true;
+        return $this;
     }
 
     protected function mode()
@@ -186,43 +210,53 @@ abstract class AbstractClient
 
     protected function list($path, array $query = [])
     {
-        return $this->collect($this->request('GET', $path, [
+        return $this->collect()->request('GET', $path, [
             'query' => $query
-        ]));
+        ]);
     }
 
     protected function create($path, array $attributes = [])
     {
-        return $this->json($this->request('POST', $path, [
+        return $this->json()->request('POST', $path, [
             'json' => $attributes
-        ]));
+        ]);
     }
 
     protected function show($path)
     {
-        return $this->json($this->request('GET', $path));
+        return $this->json()->request('GET', $path);
     }
 
     protected function update($path, array $arguments = [])
     {
-        return $this->json($this->request('PUT', $path, [
+        return $this->json()->request('PUT', $path, [
             'json' => $arguments
-        ]));
+        ]);
     }
 
     protected function destroy($path)
     {
-        return $this->json($this->request('DELETE', $path));
+        return $this->json()->request('DELETE', $path);
     }
 
-    protected function json(Response $response)
+    protected function json()
     {
-        return new JsonResponse($response);
+        $this->middleware['wrapper'] = Middleware::mapResponse(
+            function (ResponseInterface $response) {
+                return new JsonResponse($response);
+            }
+        );
+        return $this;
     }
 
-    protected function collect(Response $response)
+    protected function collect()
     {
-        return new CollectionResponse($response);
+        $this->middleware['wrapper'] = Middleware::mapResponse(
+            function (ResponseInterface $response) {
+                return new CollectionResponse($response);
+            }
+        );
+        return $this;
     }
 
     protected function request($method, ...$args)

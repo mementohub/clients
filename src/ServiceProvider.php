@@ -3,9 +3,13 @@
 namespace iMemento\Clients;
 
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use iMemento\Clients\Handlers\MultiHandler;
 
 class ServiceProvider extends IlluminateServiceProvider
 {
+    public $singletons = [
+        MultiHandler::class     => MultiHandler::class
+    ];
 
     public function boot()
     {
