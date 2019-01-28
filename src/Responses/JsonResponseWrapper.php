@@ -13,7 +13,7 @@ trait JsonResponseWrapper
     protected function boot(Response $response)
     {
         $this->response = $response;
-        $this->json = $this->getJson();
+        $this->json = $this->responseJson();
     }
 
     public function response() : Response
@@ -21,16 +21,21 @@ trait JsonResponseWrapper
         return $this->response;
     }
 
-    protected function retrieveBody()
+    public function json()
+    {
+        return $this->json;
+    }
+
+    protected function responseBody()
     {
         $body = $this->response->getBody()->getContents();
         $this->response->getBody()->rewind();
         return $body;
     }
 
-    protected function getJson()
+    protected function responseJson()
     {
-        $body = $this->retrieveBody();
+        $body = $this->responseBody();
         $json = json_decode($body);
         if (json_last_error() !== 0) {
             throw new \InvalidArgumentException('JSON decode error: ' . json_last_error_msg() . PHP_EOL . $body);
