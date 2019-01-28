@@ -8,9 +8,9 @@ use Psr\Http\Message\ResponseInterface;
 
 class CollectionResponse extends Collection implements ResponseInterface
 {
-    use JsonResponseWrapper;
+    use JsonResponseWrapper, CollectionInterceptor;
 
-    public function __construct(Response $response)
+    public function __construct($response)
     {
         $this->boot($response);
         if (property_exists($this->json, 'data')) {
