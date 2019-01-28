@@ -45,6 +45,21 @@ class ClientTest extends TestCase
     }
 
     /**
+     * structure behaviour
+     */
+
+    public function testItCanRetrieveOriginalBody()
+    {
+        $json = '{"foo":"bar"}';
+        $response = $this->client([
+            new Response(200, [], $json)
+        ])->call();
+        $this->assertEquals('bar', $response->foo);
+        $this->assertEquals($json, $response->response()->getBody()->getContents());
+        $this->assertEquals($json, (string)$response->response()->getBody());
+    }
+
+    /**
      * Mode behaviour tests
      */
     public function testDefaultMode()
