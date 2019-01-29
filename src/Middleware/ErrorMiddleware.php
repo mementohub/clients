@@ -37,7 +37,7 @@ class ErrorMiddleware
                     // the default behaviour
                     return $handler($request, $options);
                 }
-                
+
                 $options['http_errors'] = false;
                 return $handler($request, $options)->then(
                     function (ResponseInterface $response) use ($request, $handler) {

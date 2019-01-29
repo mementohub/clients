@@ -8,11 +8,11 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Promise\Promise;
-use GuzzleHttp\HandlerStack;
 use iMemento\Clients\Responses\CollectionResponse;
 use iMemento\Clients\Responses\JsonResponse;
 use iMemento\SDK\Auth\User;
 use iMemento\Clients\Handlers\MultiHandler;
+use iMemento\Clients\Handlers\HandlerStack;
 use iMemento\Clients\Middleware\Middleware;
 
 abstract class AbstractClient
@@ -63,36 +63,18 @@ abstract class AbstractClient
 
     protected function config()
     {
-        $stack = new HandlerStack();
-        $handler = resolve(MultiHandler::class);
-        $stack->setHandler($handler);
+        $stack = resolve(HandlerStack::class);
 
-        $current = [
+        $defaults = [
             'base_uri' => $this->getBaseUri(),
             'handler'   => $stack,
         ];
 
-        // merging the config received in the constructor
-        foreach ($this->config as $key => $value) {
-            if (! array_key_exists($key, $current)) {
-                $current[$key] = $value;
-                continue;
-            }
-            if (! is_array($current[$key])) {
-                $current[$key] = $value;
-                continue;
-            }
-            if (! is_array($this->config[$key])) {
-                $this->config[$key] = [$this->config[$key]];
-            }
-            array_merge($current[$key], $this->config[$key]);
-        }
+        $config = array_merge($defaults, $this->config);
 
-        // the middleware are being attached after the merge
-        // so that they will be pushed to the desired handler
-        $this->addMiddleware($current['handler']);
+        $this->addMiddleware($config['handler']);
 
-        return $current;
+        return $config;
     }
 
     protected function addMiddleware($stack)

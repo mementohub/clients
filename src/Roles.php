@@ -4,7 +4,7 @@ namespace iMemento\Clients;
 
 class Roles extends AbstractClient
 {
-    protected $mode = 'silent';
+    protected $mode = 'critical';
 
     protected $authorization = 'service';
 
