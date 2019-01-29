@@ -11,10 +11,9 @@ use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\HandlerStack;
 use iMemento\Clients\Responses\CollectionResponse;
 use iMemento\Clients\Responses\JsonResponse;
-use iMemento\Clients\Responses\ErrorResponse;
 use iMemento\SDK\Auth\User;
-use GuzzleHttp\Middleware;
 use iMemento\Clients\Handlers\MultiHandler;
+use iMemento\Clients\Middleware\Middleware;
 
 abstract class AbstractClient
 {
@@ -32,6 +31,7 @@ abstract class AbstractClient
     {
         $this->config = $config;
         $this->resetRuntime();
+        $this->resetMiddleware();
     }
 
     abstract public function getBaseUri();
@@ -52,6 +52,15 @@ abstract class AbstractClient
         ];
     }
 
+    protected function resetMiddleware()
+    {
+        $this->middleware = [
+            'auth'      => null,
+            'retry'     => null,
+            'wrapper'   => null,
+        ];
+    }
+
     protected function config()
     {
         $stack = new HandlerStack();
@@ -60,7 +69,6 @@ abstract class AbstractClient
 
         $current = [
             'base_uri' => $this->getBaseUri(),
-            RequestOptions::HEADERS => $this->getHeaders(),
             'handler'   => $stack,
         ];
 
@@ -87,34 +95,22 @@ abstract class AbstractClient
         return $current;
     }
 
-    protected function getHeaders()
-    {
-        return [
-            'Authorization' => $this->getAuthorizationHeader()
-        ];
-    }
-
-    protected function getAuthorizationHeader()
-    {
-        if (! $this->requiresAuthorization()) {
-            return '';
-        }
-        return 'Bearer ' . $this->token();
-    }
-
-    protected function requiresAuthorization()
-    {
-        $value = $this->runtime['authorization']['requested'] ?? $this->authorization;
-        return ($value !== 'none'); 
-    }
-
     protected function addMiddleware($stack)
     {
+        // this needs to be run first so that it overrides the http_errors behaviour
+        $stack->unshift(Middleware::errors($this->runtime, $this->mode), 'errors');
+
+        $this->middleware['auth'] = Middleware::auth($this->runtime, $this->authorization);
+
+        // removing empty middleware
+        $this->middleware = array_filter($this->middleware);
+
         foreach ($this->middleware as $name => $middleware) {
             $stack->remove($name);
             $stack->push($middleware, $name);
         }
-        $this->middleware = [];
+
+        $this->resetMiddleware();
     }
 
     public function anonymously()
@@ -147,43 +143,16 @@ abstract class AbstractClient
         return $this;
     }
 
-    protected function token()
-    {
-        $authorization = $this->runtime['authorization']['requested'] ?? $this->authorization;
-        switch ($authorization) {
-            case 'token':
-                return $this->runtime['token'];
-                break;
-            case 'user':
-                return auth()->user()->token;
-                break;
-            case 'service':
-                return \iMemento\SDK\Auth\Helper::authenticate();
-                break;
-            default:
-                return '';
-                break;
-        }
-        return '';
-    }
-
     public function async()
     {
         $this->runtime['async'] = true;
         return $this;
     }
 
-    protected function mode()
+    public function retries(int $allowed)
     {
-        return $this->runtime['mode']['requested']
-            ?? $this->runtime['mode']['preferred']
-            ?? $this->mode
-        ;
-    }
-
-    protected function shouldFail()
-    {
-        return ($this->mode() !== 'silent');
+        $this->middleware['retries'] = Middleware::retries($allowed);
+        return $this;
     }
 
     public function silent()
@@ -243,40 +212,24 @@ abstract class AbstractClient
 
     protected function json()
     {
-        $this->middleware['wrapper'] = Middleware::mapResponse(
-            function (ResponseInterface $response) {
-                return new JsonResponse($response);
-            }
-        );
+        $this->middleware['wrapper'] = Middleware::json();
         return $this;
     }
 
     protected function collect()
     {
-        $this->middleware['wrapper'] = Middleware::mapResponse(
-            function (ResponseInterface $response) {
-                return new CollectionResponse($response);
-            }
-        );
+        $this->middleware['wrapper'] = Middleware::collection();
         return $this;
     }
 
     protected function request($method, ...$args)
     {
-        $shouldFail = $this->shouldFail();
         $request = $this->runtime['async'] ? 'requestAsync' : 'request';
 
         $client = new GuzzleClient($this->config());
 
         $this->resetRuntime();
 
-        try {
-            return $client->{$request}($method, ...$args);
-        } catch (GuzzleException $e) {
-            if ($shouldFail) {
-                throw $e;
-            }
-            return new ErrorResponse($e);
-        }
+        return $client->{$request}($method, ...$args);
     }
 }

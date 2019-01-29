@@ -28,6 +28,9 @@ trait JsonResponseWrapper
 
     protected function responseBody()
     {
+        if ($this->response()->getStatusCode() >= 400) {
+            return '{}';    // we return empty objects on errors
+        }
         $body = $this->response->getBody()->getContents();
         $this->response->getBody()->rewind();
         return $body;

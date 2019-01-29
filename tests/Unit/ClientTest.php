@@ -13,9 +13,13 @@ use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise as PromiseSpace;
 use iMemento\Clients\Responses\JsonResponse;
 use iMemento\SDK\Auth\User;
+use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Log;
 
 class ClientTest extends TestCase
 {
+    protected $handler;
+
     protected function client(array $responses = [])
     {
         if (count($responses) == 0) {
@@ -31,9 +35,9 @@ class ClientTest extends TestCase
 
         $this->history = [];
         $history = Middleware::history($this->history);
-        $mock = new MockHandler($responses);
+        $this->handler = new MockHandler($responses);
 
-        $stack = HandlerStack::create($mock);
+        $stack = HandlerStack::create($this->handler);
         $stack->push($history);
 
         return new ClientStub(['handler' => $stack]);
@@ -47,7 +51,6 @@ class ClientTest extends TestCase
     /**
      * structure behaviour
      */
-
     public function testItCanRetrieveOriginalBody()
     {
         $json = '{"foo":"bar"}';
@@ -88,6 +91,68 @@ class ClientTest extends TestCase
     }
 
     /**
+     * Error handling
+     */
+    public function testItFailsOnErrors()
+    {
+        $this->expectException(BadResponseException::class);
+        $client = $this->client([
+            new Response(500, [], '{}'),
+        ]);
+
+        $client->call();
+    }
+
+    public function testItHandlesCriticalCalls()
+    {
+        $response = $this->client()->critical()->call();
+        $this->assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    public function testItHandlesSilentCalls()
+    {
+        Log::shouldReceive('debug')->once();
+        $response = $this->client([
+            new Response(500, [], '{}'),
+        ])->silent()->call();
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertEquals(500, $response->getStatusCode());
+    }
+
+    /**
+     * Retries behaviour
+     */
+    public function testItRetries()
+    {
+        $client = $this->client([
+            new Response(400, [], '{}'),
+            new Response(401, [], '{}'),
+            new Response(402, [], '{}'),
+            new Response(403, [], '{}'),
+            new Response(404, [], '{}'),
+            new Response(502, [], '{}'),
+            new Response(504, [], '{}'),
+            new Response(200, [], '{}'),
+        ]);
+
+        $client->retries(7)->call();
+    }
+
+    public function testItFailsAfterRetries()
+    {
+        $this->expectException(BadResponseException::class);
+        $client = $this->client([
+            new Response(400, [], '{}'),
+            new Response(401, [], '{}'),
+            new Response(402, [], '{}'),
+            new Response(200, [], '{}'),
+        ]);
+
+        $client->retries(2)->call();
+    }
+
+    /**
      * Authentication behaviour
      */
     public function testDefaultAuthorization()
@@ -95,7 +160,7 @@ class ClientTest extends TestCase
         $this->client()->call();
         $history = $this->history()->pop();
 
-        $this->assertToken($history['request'], 'service.token.test');
+        $this->assertToken($history, 'service.token.test');
     }
 
     public function testAsUserAuthorization()
@@ -103,7 +168,7 @@ class ClientTest extends TestCase
         $this->client()->asUser()->call();
         $history = $this->history()->pop();
 
-        $this->assertToken($history['request'], 'user.token.test');    
+        $this->assertToken($history, 'user.token.test');    
     }
 
     public function testAsCustomUserAuthorization()
@@ -114,7 +179,7 @@ class ClientTest extends TestCase
         $this->client()->as($user)->call();
         $history = $this->history()->pop();
 
-        $this->assertToken($history['request'], 'new.user.token.test');    
+        $this->assertToken($history, 'new.user.token.test');    
     }
 
     public function testCustomTokenAuthorization()
@@ -122,7 +187,15 @@ class ClientTest extends TestCase
         $this->client()->withToken('some.token.test')->call();
         $history = $this->history()->pop();
 
-        $this->assertToken($history['request'], 'some.token.test');   
+        $this->assertToken($history, 'some.token.test');   
+    }
+
+    public function testAnonymousCalls()
+    {
+        $this->client()->anonymously()->call();
+        $history = $this->history()->pop();
+
+        $this->assertToken($history, null);   
     }
 
     /**
@@ -165,10 +238,12 @@ class ClientTest extends TestCase
     }
 
 
-    public function assertToken($request, $challenge)
+    public function assertToken($transaction, $challenge = null)
     {
-        $header = $request->getHeader('Authorization');
-        $bearer = $header[0];
-        self::assertEquals($bearer, 'Bearer ' . $challenge);
+        $header = $this->handler->getLastRequest()->getHeader('Authentication');
+        if (! $challenge) {
+            return $this->assertCount(0, $header);
+        }
+        return $this->assertEquals($header[0], 'Bearer ' . $challenge);
     }
 }

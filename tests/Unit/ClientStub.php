@@ -20,7 +20,9 @@ class ClientStub extends AbstractClient
 
     public function getMode()
     {
-        return $this->mode();
+        return $this->runtime['mode']['requested']
+            ?? $this->runtime['mode']['preferred']
+            ?? $this->mode;
     }
 
     public function preferredSilentCall()
