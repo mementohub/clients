@@ -240,7 +240,7 @@ class ClientTest extends TestCase
 
     public function assertToken($transaction, $challenge = null)
     {
-        $header = $this->handler->getLastRequest()->getHeader('Authentication');
+        $header = $this->handler->getLastRequest()->getHeader('Authorization');
         if (! $challenge) {
             return $this->assertCount(0, $header);
         }

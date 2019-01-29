@@ -52,7 +52,7 @@ class AuthMiddleware
                 if (!$this->shouldAuthenticate()) {
                     return $request;
                 }
-                return $request->withHeader('Authentication', 'Bearer ' . $this->token());
+                return $request->withHeader('Authorization', 'Bearer ' . $this->token());
             }
         );
     }
