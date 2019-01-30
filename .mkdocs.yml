@@ -6,6 +6,9 @@ site_author: Bogdan Cismariu
 repo_url: https://github.com/mementohub/clients
 edit_uri: ""
 
+theme:
+    name: readthedocs
+
 nav:
     - Home: index.md
     - Usage: usage.md
