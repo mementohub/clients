@@ -11,6 +11,8 @@ theme:
 
 nav:
     - Home: index.md
+    - Usage: usage.md
+    - Development: development.md
 
 
 copyright: Copyright &copy; 2019 <a href="https://github.com/mementohub">iMemento</a>.
