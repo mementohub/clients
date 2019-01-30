@@ -1,4 +1,10 @@
 # iMemento Clients
+
+[![Build Status](https://travis-ci.org/mementohub/clients.svg?branch=master)](https://travis-ci.org/mementohub/clients)
+[![Latest Stable Version](https://poser.pugx.org/imemento/clients/v/stable)](https://packagist.org/packages/imemento/clients)
+[![License](https://poser.pugx.org/imemento/clients/license)](https://packagist.org/packages/imemento/clients)
+[![Total Downloads](https://poser.pugx.org/imemento/clients/downloads)](https://packagist.org/packages/imemento/clients)
+
 Client library classes for iMemento Services
 
 ## Installation
@@ -12,8 +18,6 @@ composer require imemento/clients
 ### Dependency Injection
 
 ```php
-<?php
-
 use iMemento\Clients\Profiles;
 
 //...
@@ -27,8 +31,6 @@ public function index(Profiles $profiles)
 ### Instantiation
 
 ```php
-<?php
-
 use iMemento\Clients\Profiles;
 
 //...
@@ -43,8 +45,6 @@ public function index()
 ### Facade
 
 ```php
-<?php
-
 use Facades\iMemento\Clients\Profiles;
 
 //...
@@ -71,7 +71,7 @@ $user = Profiles::silent()->showUser(1234);
 
 ### Critical failures
 
-This approach will always throw an exception and halt script execution. Of course you can use a `try { } catch ()` block. 
+This approach will always throw an exception and halt script execution. Of course you can use a `try { } catch ()` block.
 
 ```php
 $user = Profiles::critical()->showUser(1234);
@@ -92,7 +92,6 @@ When using multiple services at the same time, calling the servers async may hel
 You can refer to the [Guzzle official docs](http://docs.guzzlephp.org/en/stable/quickstart.html#async-requests) for more information on placing asynchronous calls.
 
 ```php
-
 use GuzzleHttp\Promise;
 
 // ...
