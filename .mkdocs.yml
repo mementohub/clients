@@ -1,0 +1,19 @@
+site_name: iMemento Clients
+site_url: https://github.com/mementohub/clients
+site_description: Client library classes for iMemento Services.
+site_author: Bogdan Cismariu
+
+repo_url: https://github.com/mementohub/clients
+edit_uri: ""
+
+theme:
+    name: mkdocs
+
+nav:
+    - Home: index.md
+
+
+copyright: Copyright &copy; 2019 <a href="https://github.com/mementohub">iMemento</a>.
+
+plugins:
+    - search

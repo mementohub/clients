@@ -1,11 +1,5 @@
 # iMemento Clients
 
-[![Build Status](https://travis-ci.org/mementohub/clients.svg?branch=master)](https://travis-ci.org/mementohub/clients)
-[![Docs Status](https://readthedocs.org/projects/imemento-clients/badge/?version=latest)](https://imemento-clients.readthedocs.io)
-[![Latest Stable Version](https://poser.pugx.org/imemento/clients/v/stable)](https://packagist.org/packages/imemento/clients)
-[![License](https://poser.pugx.org/imemento/clients/license)](https://packagist.org/packages/imemento/clients)
-[![Total Downloads](https://poser.pugx.org/imemento/clients/downloads)](https://packagist.org/packages/imemento/clients)
-
 Client library classes for iMemento Services
 
 ## Installation
