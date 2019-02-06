@@ -1,6 +1,6 @@
 # Usage
 
-## Dependency Injection
+### Dependency Injection
 
 ```php
 use iMemento\Clients\Profiles;
@@ -13,7 +13,7 @@ public function index(Profiles $profiles)
 }
 ```
 
-## Instantiation
+### Instantiation
 
 ```php
 use iMemento\Clients\Profiles;
@@ -27,7 +27,7 @@ public function index()
 }
 ```
 
-## Facade
+### Facade
 
 ```php
 use Facades\iMemento\Clients\Profiles;

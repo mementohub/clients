@@ -11,7 +11,7 @@ theme:
 
 nav:
     - Home: 'index.md'
-    - Usage: 'usage.md'
+    - General Usage: 'usage.md'
     - Development: 'development.md'
 
 
