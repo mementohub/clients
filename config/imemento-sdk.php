@@ -7,6 +7,9 @@ return [
     'contracts' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_CONTRACTS', 'services-contracts') . '/api/'
     ],
+    'logs' => [
+        'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_ACTIVITY_LOG', 'services-activity-log') . '/api/'
+    ],
     'ratings' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_RATINGS', 'services-ratings') . '/api/'
     ],
