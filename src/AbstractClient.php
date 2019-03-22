@@ -40,24 +40,24 @@ abstract class AbstractClient
     protected function resetRuntime()
     {
         $this->runtime = [
-            'mode' => [
+            'mode'          => [
                 'preferred' => null,    // critical || silent
                 'requested' => null,    // critical || silent
             ],
             'authorization' => [
                 'requested' => null,    // none || token || user || service
             ],
-            'token' => null,
-            'async' => false,           // bool
+            'token'         => null,
+            'async'         => false,           // bool
         ];
     }
 
     protected function resetMiddleware()
     {
         $this->middleware = [
-            'auth'      => null,
-            'retry'     => null,
-            'wrapper'   => null,
+            'auth'    => null,
+            'retry'   => null,
+            'wrapper' => null,
         ];
     }
 
@@ -67,7 +67,7 @@ abstract class AbstractClient
 
         $defaults = [
             'base_uri' => $this->getBaseUri(),
-            'handler'   => $stack,
+            'handler'  => $stack,
         ];
 
         $config = array_merge($defaults, $this->config);
@@ -175,9 +175,11 @@ abstract class AbstractClient
         ]);
     }
 
-    protected function get($path)
+    protected function get($path, array $query = [])
     {
-        return $this->json()->request('GET', $path);
+        return $this->json()->request('GET', $path, [
+            'query' => $query,
+        ]);
     }
 
     protected function put($path, array $arguments = [])

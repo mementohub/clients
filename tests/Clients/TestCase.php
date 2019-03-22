@@ -6,8 +6,6 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Exception\RequestException;
 use iMemento\Clients\AbstractClient;
 use iMemento\Clients\Tests\TestCase as BaseTestCase;
 use iMemento\SDK\Auth\User;
