@@ -10,7 +10,7 @@ class Events extends AbstractClient
 
     public function getBaseUri()
     {
-        return config('imemento-sdk.event-bus.base_uri');
+        return config('imemento-sdk.eventbus.base_uri');
     }
 
     public function emitEvent(array $attributes = [])
