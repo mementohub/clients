@@ -68,6 +68,9 @@ abstract class AbstractClient
         $defaults = [
             'base_uri' => $this->getBaseUri(),
             'handler'  => $stack,
+            'headers'  => [
+                'Accept'    => 'application/json',
+            ],
         ];
 
         $config = array_merge($defaults, $this->config);
