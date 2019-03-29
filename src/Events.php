@@ -4,7 +4,7 @@ namespace iMemento\Clients;
 
 class Events extends AbstractClient
 {
-    protected $mode = 'critical';
+    protected $mode = 'silent';
 
     protected $authorization = 'service';
 
@@ -13,8 +13,10 @@ class Events extends AbstractClient
         return config('imemento-sdk.eventbus.base_uri');
     }
 
-    public function emitEvent(array $attributes = [])
+    public function emit(array $attributes = [])
     {
+        $attributes = array_merge(['service' => config('app.name')], $attributes);
+
         return $this->post('listen', $attributes);
     }
 }
