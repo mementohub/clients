@@ -11,8 +11,8 @@
     ],
     "require": {
         "php": "^7.0",
-        "illuminate/support": "^5.7.0",
-        "illuminate/contracts": "^5.7.0",
+        "illuminate/support": "^5.7",
+        "illuminate/contracts": "^5.7",
         "guzzlehttp/guzzle": "^6.3",
         "imemento/sdk-auth": "^5.7"
     },
