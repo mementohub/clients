@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": "^7.0",
+        "opis/closure": "^3.1",
         "illuminate/support": "^5.7",
         "illuminate/contracts": "^5.7",
         "guzzlehttp/guzzle": "^6.3",

@@ -8,6 +8,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use function Opis\Closure\unserialize;
 
 class QueueRequest implements ShouldQueue
 {
@@ -20,6 +21,7 @@ class QueueRequest implements ShouldQueue
 
     public function __construct($config, $request, $method, ...$args)
     {
+
         $this->config = $config;
         $this->request = $request;
         $this->method = $method;
@@ -28,7 +30,9 @@ class QueueRequest implements ShouldQueue
 
     public function handle()
     {
-        $client = new Client($this->config);
+        $config = unserialize($this->config);
+
+        $client = new Client($config);
 
         return $client->{$this->request}($this->method, ...$this->args);
     }

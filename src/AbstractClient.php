@@ -7,6 +7,7 @@ use iMemento\Clients\Jobs\QueueRequest;
 use iMemento\SDK\Auth\User;
 use iMemento\Clients\Handlers\HandlerStack;
 use iMemento\Clients\Middleware\Middleware;
+use function Opis\Closure\serialize;
 
 abstract class AbstractClient
 {
@@ -224,6 +225,9 @@ abstract class AbstractClient
         $client = new GuzzleClient($config);
 
         $this->resetRuntime();
+
+        //special serialize that allows serialization of closures
+        $config = serialize($config);
 
         return $this->should_queue ?
             QueueRequest::dispatch($config, $request, $method, ...$args) :
