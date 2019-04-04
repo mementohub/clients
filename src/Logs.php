@@ -8,6 +8,8 @@ class Logs extends AbstractClient
 
     protected $authorization = 'service';
 
+    protected $should_queue = true;
+
     public function getBaseUri()
     {
         return config('imemento-sdk.logs.base_uri');

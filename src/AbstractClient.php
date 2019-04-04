@@ -3,15 +3,8 @@
 namespace iMemento\Clients;
 
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\RequestOptions;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Promise\Promise;
-use iMemento\Clients\Responses\CollectionResponse;
-use iMemento\Clients\Responses\JsonResponse;
+use iMemento\Clients\Jobs\QueueRequest;
 use iMemento\SDK\Auth\User;
-use iMemento\Clients\Handlers\MultiHandler;
 use iMemento\Clients\Handlers\HandlerStack;
 use iMemento\Clients\Middleware\Middleware;
 
@@ -20,6 +13,8 @@ abstract class AbstractClient
     protected $mode = 'critical';           // critical || silent
 
     protected $authorization = 'service';   // none || user || service
+
+    protected $should_queue = false;        // bool
 
     protected $config = [];
 
@@ -48,7 +43,7 @@ abstract class AbstractClient
                 'requested' => null,    // none || token || user || service
             ],
             'token'         => null,
-            'async'         => false,           // bool
+            'async'         => false,   // bool
         ];
     }
 
@@ -134,6 +129,18 @@ abstract class AbstractClient
         return $this;
     }
 
+    public function queue()
+    {
+        $this->should_queue = true;
+        return $this;
+    }
+
+    public function dontQueue()
+    {
+        $this->should_queue = false;
+        return $this;
+    }
+
     public function retries(int $allowed)
     {
         $this->middleware['retries'] = Middleware::retries($allowed);
@@ -212,11 +219,14 @@ abstract class AbstractClient
     protected function request($method, ...$args)
     {
         $request = $this->runtime['async'] ? 'requestAsync' : 'request';
+        $config = $this->config();
 
-        $client = new GuzzleClient($this->config());
+        $client = new GuzzleClient($config);
 
         $this->resetRuntime();
 
-        return $client->{$request}($method, ...$args);
+        return $this->should_queue ?
+            QueueRequest::dispatch($config, $request, $method, ...$args) :
+            $client->{$request}($method, ...$args);
     }
 }

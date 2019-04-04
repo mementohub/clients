@@ -8,6 +8,8 @@ class Events extends AbstractClient
 
     protected $authorization = 'service';
 
+    protected $should_queue = true;
+
     public function getBaseUri()
     {
         return config('imemento-sdk.eventbus.base_uri');
