@@ -15,9 +15,14 @@ class Events extends AbstractClient
         return config('imemento-sdk.eventbus.base_uri');
     }
 
-    public function emit(array $attributes = [])
+    public function emit($event, array $payload = null, string $service = null, string $token = null, int $delay = null)
     {
-        $attributes = array_merge(['service' => config('app.name')], $attributes);
+        $service = $service ?? config('app.name');
+
+        // allow passing either a keyed array with all the variables or the variables as method params
+        $attributes = is_array($event) ?
+            array_merge(['service' => $service], $event) :
+            compact('event', 'payload', 'service', 'token', 'delay');
 
         return $this->post('listen', $attributes);
     }
