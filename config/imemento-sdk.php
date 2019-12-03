@@ -10,8 +10,11 @@ return [
     'logs' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_ACTIVITY_LOG', 'services-activity-log') . '/api/'
     ],
-    'eventbus' => [
+    'event-bus' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_EVENTBUS', 'services-event-bus') . '/api/'
+    ],
+    'exchange-rates' => [
+        'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_EXCHANGE_RATES', 'services-exchange-rates') . '/api/'
     ],
     'ratings' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_RATINGS', 'services-ratings') . '/api/'
