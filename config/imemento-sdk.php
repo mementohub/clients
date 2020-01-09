@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'bookings' => [
+        'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_BOOKINGS', 'services-bookings') . '/api/'
+    ],
     'comments' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_COMMENTS', 'services-comments') . '/api/'
     ],
