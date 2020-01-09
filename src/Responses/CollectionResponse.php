@@ -13,7 +13,7 @@ class CollectionResponse extends Collection implements ResponseInterface
     public function __construct($response)
     {
         $this->boot($response);
-        if (property_exists($this->json, 'data')) {
+        if (property_exists((object) $this->json, 'data')) {
             return parent::__construct($this->json->data);
         }
         return parent::__construct($this->json);

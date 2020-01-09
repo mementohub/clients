@@ -27,6 +27,8 @@ class BookingsTest extends TestCase
         return [
             [ 'searchHotels',          [ ],             'GET',    'search/hotels',           CollectionResponse::class ],
             [ 'searchHotel',           [1],             'GET',    'search/hotels/1',         JsonResponse::class       ],
+            [ 'staticsHotels',         [ ],             'GET',    'statics/hotels',          CollectionResponse::class ],
+            [ 'staticsHotel',          [1],             'GET',    'statics/hotels/1',        JsonResponse::class       ],
         ];
     }
 }
