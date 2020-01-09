@@ -8,7 +8,7 @@ class Logs extends AbstractClient
 
     protected $authorization = 'service';
 
-    protected $should_queue = true;
+    protected $should_queue = false;
 
     public function getBaseUri()
     {
@@ -23,7 +23,7 @@ class Logs extends AbstractClient
 
     public function createLog(array $attributes = [])
     {
-        return $this->post('logs', $attributes);
+        return $this->queue()->post('logs', $attributes);
     }
 
     public function showLog(int $id)

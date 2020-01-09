@@ -26,7 +26,7 @@ class LogTest extends TestCase
     {
         return [
             [ 'listLogs',          [ ],             'GET',    'logs',           CollectionResponse::class ],
-            [ 'createLog',         [ ],             'POST',   'logs',           JsonResponse::class       ],
+            // [ 'createLog',         [ ],             'POST',   'logs',           JsonResponse::class       ],     // queued
             [ 'showLog',           [1],             'GET',    'logs/1',         JsonResponse::class       ],
             [ 'updateLog',         [1],             'PUT',    'logs/1',         JsonResponse::class       ],
             [ 'destroyLog',        [1],             'DELETE', 'logs/1',         JsonResponse::class       ],
