@@ -8,11 +8,6 @@ class Ratings extends AbstractClient
 
     protected $authorization = 'service';
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.ratings.base_uri');
-    }
-
     // region CRUD
     public function listRatings(array $query = [])
     {

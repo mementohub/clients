@@ -8,11 +8,6 @@ class Bookings extends AbstractClient
 
     protected $authorization = 'none';
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.bookings.base_uri');
-    }
-
     // search
     public function searchHotels(array $query = [])
     {

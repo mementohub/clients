@@ -8,11 +8,6 @@ class Comments extends AbstractClient
 
     protected $authorization = 'service';
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.comments.base_uri');
-    }
-
     // region CRUD
     public function listComments(array $query = [])
     {

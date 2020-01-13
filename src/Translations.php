@@ -8,11 +8,6 @@ class Translations extends AbstractClient
 
     protected $authorization = 'service';
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.translations.base_uri');
-    }
-
     // region CRUD
 
     // region Platforms

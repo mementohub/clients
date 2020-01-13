@@ -8,11 +8,6 @@ class Places extends AbstractClient
 
     protected $authorization = 'service';
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.places.base_uri');
-    }
-
     // region CRUD
     public function listPlaces(array $query = [])
     {

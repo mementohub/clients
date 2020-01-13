@@ -2,7 +2,11 @@
 
 return [
     'bookings' => [
-        'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_BOOKINGS', 'services-bookings') . '/api/'
+        'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_BOOKINGS', 'services-bookings') . '/api/',
+        'query' => [
+            'pos'       => null,
+            'channel'   => null,
+        ]
     ],
     'comments' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_COMMENTS', 'services-comments') . '/api/'
@@ -30,5 +34,8 @@ return [
     ],
     'profiles' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_PROFILES', 'services-profiles') . '/api/'
+    ],
+    'translations' => [
+        'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_TRANSLATIONS', 'services-translations') . '/api/'
     ]
 ];

@@ -23,6 +23,8 @@ abstract class AbstractClient
 
     protected $middleware = [];
 
+    protected $config_name = null;
+
     public function __construct(array $config = [])
     {
         $this->config = $config;
@@ -30,8 +32,10 @@ abstract class AbstractClient
         $this->resetMiddleware();
     }
 
-    abstract public function getBaseUri();
-
+    public function getBaseUri()
+    {
+        return $this->getConfigValue('base_uri');
+    }
 
     protected function resetRuntime()
     {
@@ -57,19 +61,42 @@ abstract class AbstractClient
         ];
     }
 
-    protected function config()
+    protected function getConfigName()
+    {
+        $name = $this->config_name ?? (new \ReflectionClass($this))->getShortName();
+        return strtolower($name);
+    }
+
+    protected function getConfigValue($name, $default = null)
+    {
+        $config = $this->config();
+        if (array_key_exists($name, $config)) {
+            return $config[$name];
+        }
+        return $default;
+    }
+
+    protected function defaultConfig()
     {
         $stack = resolve(HandlerStack::class);
 
         $defaults = [
-            'base_uri' => $this->getBaseUri(),
             'handler'  => $stack,
             'headers'  => [
                 'Accept'    => 'application/json',
             ],
+            'query' => [],
+            'json'  => []
         ];
 
-        $config = array_merge($defaults, $this->config);
+        $fromConfigFile = config('imemento-sdk.' . $this->getConfigName(), []);
+
+        return array_merge($defaults, $fromConfigFile);
+    }
+
+    protected function config()
+    {
+        $config = array_merge($this->defaultConfig(), $this->config);
 
         $this->addMiddleware($config['handler']);
 
@@ -175,28 +202,28 @@ abstract class AbstractClient
     protected function list($path, array $query = [])
     {
         return $this->collect()->request('GET', $path, [
-            'query' => $query
+            'query' => array_merge($this->getConfigValue('query', []), $query)
         ]);
     }
 
     protected function post($path, array $attributes = [])
     {
         return $this->json()->request('POST', $path, [
-            'json' => $attributes
+            'json' => array_merge($this->getConfigValue('json', []), $attributes)
         ]);
     }
 
     protected function get($path, array $query = [])
     {
         return $this->json()->request('GET', $path, [
-            'query' => $query,
+            'query' => array_merge($this->getConfigValue('query', []), $query)
         ]);
     }
 
     protected function put($path, array $arguments = [])
     {
         return $this->json()->request('PUT', $path, [
-            'json' => $arguments
+            'json' => array_merge($this->getConfigValue('json', []), $arguments)
         ]);
     }
 

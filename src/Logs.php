@@ -10,11 +10,6 @@ class Logs extends AbstractClient
 
     protected $should_queue = false;
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.logs.base_uri');
-    }
-
     // region CRUD
     public function listLogs(array $query = [])
     {

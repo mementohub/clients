@@ -8,11 +8,6 @@ class Profiles extends AbstractClient
 
     protected $authorization = 'service';
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.profiles.base_uri');
-    }
-
     /**
      * Users CRUD
      */

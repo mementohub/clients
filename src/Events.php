@@ -10,10 +10,7 @@ class Events extends AbstractClient
 
     protected $should_queue = true;
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.event-bus.base_uri');
-    }
+    protected $config_name = 'event-bus';
 
     public function emit($event, array $payload = null, string $service = null, string $token = null, int $delay = null)
     {

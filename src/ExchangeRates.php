@@ -8,10 +8,7 @@ class ExchangeRates extends AbstractClient
 
     protected $authorization = 'service';
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.exchange-rates.base_uri');
-    }
+    protected $config_name = 'exchange-rates';
 
     /**
      * Operational endpoints

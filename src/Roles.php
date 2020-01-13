@@ -7,12 +7,7 @@ class Roles extends AbstractClient
     protected $mode = 'critical';
 
     protected $authorization = 'service';
-
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.roles.base_uri');
-    }
-
+    
     /**
      * Services CRUD
      */

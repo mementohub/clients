@@ -8,11 +8,6 @@ class Contracts extends AbstractClient
 
     protected $authorization = 'service';
 
-    public function getBaseUri()
-    {
-        return config('imemento-sdk.contracts.base_uri');
-    }
-
     public function listContracts(array $query = [])
     {
         return $this->list('contracts', $query);
