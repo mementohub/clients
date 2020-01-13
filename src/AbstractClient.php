@@ -69,7 +69,7 @@ abstract class AbstractClient
 
     protected function getConfigValue($name, $default = null)
     {
-        $config = $this->config();
+        $config = array_merge($this->defaultConfig(), $this->config);
         if (array_key_exists($name, $config)) {
             return $config[$name];
         }
