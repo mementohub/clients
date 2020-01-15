@@ -36,16 +36,14 @@ class Places extends AbstractClient
     // endregion
 
     // region Operational
-    public function search(string $query, $locale = 'en', $size = 5, $country = null, $type = null)
+    public function search(array $query = [])
     {
-        $query = compact('query', 'locale', 'size', 'country', 'type');
-        return $this->get('search', $query);
+        return $this->list('search', $query);
     }
 
     public function place(string $id, array $with = [])
     {
-        $query = compact($with);
-        return $this->get("place/$id", $query);
+        return $this->get("place/$id", $with);
     }
     // endregion
 }

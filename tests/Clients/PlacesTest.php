@@ -30,7 +30,7 @@ class PlacesTest extends TestCase
             ['updatePlace',   [1],    'PUT',      'places/1',   JsonResponse::class],
             ['destroyPlace',  [1],    'DELETE',   'places/1',   JsonResponse::class],
 
-            ['search', ['abcd'], 'GET', 'search', JsonResponse::class],
+            ['search', [['query' => 'abcd']], 'GET', 'search', CollectionResponse::class],
             ['place',  [1],      'GET', 'place/1',  JsonResponse::class],
         ];
     }
