@@ -41,9 +41,8 @@ class Comments extends AbstractClient
         return $this->put("comments/$id/approve");
     }
 
-    public function getResourceCommentSum(string $resource_id, string $resource_type, string $resource_owner)
+    public function getResourceCommentSum(array $query = [])
     {
-        $query = compact('resource_id', 'resource_type', 'resource_owner');
         return $this->get('comments/sum', $query);
     }
     // endregion

@@ -12,15 +12,11 @@ class Events extends AbstractClient
 
     protected $config_name = 'event-bus';
 
-    public function emit($event, array $payload = null, string $service = null, string $token = null, int $delay = null)
+    public function emit(array $event = [])
     {
         $service = $service ?? config('app.name');
 
-        // allow passing either a keyed array with all the variables or the variables as method params
-        $attributes = is_array($event) ?
-            array_merge(['service' => $service], $event) :
-            compact('event', 'payload', 'service', 'token', 'delay');
-
+        $attributes = array_merge(['service' => $service], $event);
         return $this->post('listen', $attributes);
     }
 }

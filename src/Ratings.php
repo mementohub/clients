@@ -36,9 +36,8 @@ class Ratings extends AbstractClient
     // endregion
 
     // region Operational
-    public function getResourceRatingAverage(array $resource_ids, string $resource_type, string $resource_owner, int $size = 20, int $page = 1)
+    public function getResourceRatingAverage(array $query = [])
     {
-        $query = compact('resource_ids', 'resource_type', 'resource_owner', 'size', 'page');
         return $this->get('ratings/average', $query);
     }
     // endregion

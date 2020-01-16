@@ -31,7 +31,7 @@ class RatingTest extends TestCase
             ['updateRating', [1], 'PUT', 'ratings/1', JsonResponse::class],
             ['destroyRating', [1], 'DELETE', 'ratings/1', JsonResponse::class],
 
-            ['getResourceRatingAverage', [ [1], '1', '1'], 'GET', 'ratings/average', JsonResponse::class],
+            ['getResourceRatingAverage', [ [[1], '1', '1'] ], 'GET', 'ratings/average', JsonResponse::class],
         ];
     }
 }

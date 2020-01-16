@@ -32,7 +32,7 @@ class CommentTest extends TestCase
             [ 'destroyComment',        [1],             'DELETE', 'comments/1',         JsonResponse::class       ],
 
             [ 'approveComment',        [1],             'PUT',    'comments/1/approve', JsonResponse::class       ],
-            [ 'getResourceCommentSum', ['1', '1', '1'], 'GET',    'comments/sum',       JsonResponse::class       ],
+            [ 'getResourceCommentSum', [['1', '1', '1']], 'GET',    'comments/sum',       JsonResponse::class       ],
         ];
     }
 }
