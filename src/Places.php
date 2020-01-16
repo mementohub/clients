@@ -6,7 +6,7 @@ class Places extends AbstractClient
 {
     protected $mode = 'critical';
 
-    protected $authorization = 'service';
+    protected $authorization = 'none';
 
     // region CRUD
     public function listPlaces(array $query = [])
