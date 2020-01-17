@@ -106,9 +106,9 @@ abstract class AbstractClient
     protected function addMiddleware($stack)
     {
         // this needs to be run first so that it overrides the http_errors behaviour
-        $stack->unshift(Middleware::errors($this->runtime, $this->mode), 'errors');
+        $stack->unshift(Middleware::errors($this->failureMode()), 'errors');
 
-        $this->middleware['auth'] = Middleware::auth($this->runtime, $this->authorization);
+        $this->middleware['auth'] = Middleware::auth($this->authMethod(), data_get($this->runtime, 'token'));
 
         // removing empty middleware
         $this->middleware = array_filter($this->middleware);
@@ -234,14 +234,29 @@ abstract class AbstractClient
 
     protected function json()
     {
-        $this->middleware['wrapper'] = Middleware::json();
+        $this->middleware['wrapper'] = Middleware::json($this->failureMode());
         return $this;
     }
 
     protected function collect()
     {
-        $this->middleware['wrapper'] = Middleware::collection();
+        $this->middleware['wrapper'] = Middleware::collection($this->failureMode());
         return $this;
+    }
+
+    protected function failureMode()
+    {
+        return data_get($this->runtime, 'mode.requested')
+            ?? data_get($this->runtime, 'mode.preferred')
+            ?? $this->mode
+            ?? 'critical';
+    }
+
+    protected function authMethod()
+    {
+        return data_get($this->runtime, 'authorization.requested')
+            ?? $this->authorization
+            ?? 'none';
     }
 
     protected function request($method, ...$args)

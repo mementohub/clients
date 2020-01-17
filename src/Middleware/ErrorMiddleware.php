@@ -8,25 +8,16 @@ use GuzzleHttp\Psr7\Response;
 
 class ErrorMiddleware
 {
-    protected $config = [];
-    protected $default = '';
+    protected $mode;
 
-    public function __construct($config, $default)
+    public function __construct(string $mode = 'critical')
     {
-        $this->config = $config;
-        $this->default = $default;
-    }
-
-    protected function mode()
-    {
-        return $this->config['mode']['requested']
-            ?? $this->config['mode']['preferred']
-            ?? $this->default;
+        $this->mode = $mode;
     }
 
     protected function shouldFail()
     {
-        return ($this->mode() !== 'silent');
+        return ($this->mode != 'silent');
     }
 
     public function handler()

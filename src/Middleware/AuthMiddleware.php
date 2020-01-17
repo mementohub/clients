@@ -7,30 +7,25 @@ use Psr\Http\Message\RequestInterface;
 
 class AuthMiddleware
 {
-    protected $config = [];
-    protected $default = '';
+    protected $method;
+    protected $token;
 
-    public function __construct($config, $default)
+    public function __construct(string $method = 'none', $token = null)
     {
-        $this->config = $config;
-        $this->default = $default;
+        $this->method = $method;
+        $this->token = $token;
     }
 
     protected function shouldAuthenticate()
     {
-        return ($this->method() !== 'none');
-    }
-
-    protected function method()
-    {
-        return $this->config['authorization']['requested'] ?? $this->default;
+        return ($this->method != 'none');
     }
 
     protected function token()
     {
-        switch ($this->method()) {
+        switch ($this->method) {
             case 'token':
-                return $this->config['token'];
+                return $this->token;
                 break;
             case 'user':
                 return auth()->user()->token;
