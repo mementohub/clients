@@ -25,6 +25,11 @@ class Bookings extends AbstractClient
         return $this->list('statics/hotels', $query);
     }
 
+    public function staticsHotelsLocation(array $query = [])
+    {
+        return $this->list('statics/hotels-location', $query);
+    }
+
     public function staticsHotel(int $id, array $query = [])
     {
         return $this->get("statics/hotels/$id", $query);
