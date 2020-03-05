@@ -6,7 +6,7 @@ class ExchangeRates extends AbstractClient
 {
     protected $mode = 'critical';
 
-    protected $authorization = 'service';
+    protected $authorization = 'none';
 
     protected $config_name = 'exchange-rates';
 
