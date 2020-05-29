@@ -23,6 +23,9 @@ return [
     'exchange-rates' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_EXCHANGE_RATES', 'services-exchange-rates') . '/api/'
     ],
+    'notifications' => [
+        'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_NOTIFICATIONS', 'services-notifications') . '/api/v1/'
+    ],
     'ratings' => [
         'base_uri' => env('ENDPOINT_INTERNAL_SERVICES_RATINGS', 'services-ratings') . '/api/'
     ],
