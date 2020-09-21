@@ -38,27 +38,27 @@ class Bookings extends AbstractClient
     // reservations
     public function reservation(string $code)
     {
-        return $this->get("/reservations/$code");
+        return $this->get("reservations/$code");
     }
-    
+
     public function reservationBook(array $arguments)
     {
-        return $this->post("/reservations/book", $arguments);
+        return $this->post("reservations/book", $arguments);
     }
 
     public function reservationCancel(string $code)
     {
-        return $this->delete("/reservations/$code/cancel");
+        return $this->delete("reservations/$code/cancel");
     }
     
     public function reservationNoShow(string $code)
     {
-        return $this->delete("/reservations/$code/no-show");
+        return $this->delete("reservations/$code/no-show");
     }
 
     public function reservationUpdate(string $code, array $arguments = [])
     {
-        return $this->put("/reservations/$code/change", $arguments);
+        return $this->put("reservations/$code/change", $arguments);
     }
 
 }
