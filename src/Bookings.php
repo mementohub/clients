@@ -40,6 +40,11 @@ class Bookings extends AbstractClient
     {
         return $this->get("/reservations/$code");
     }
+    
+    public function reservationBook(array $arguments)
+    {
+        return $this->post("/reservations/book", $arguments);
+    }
 
     public function reservationCancel(string $code)
     {
