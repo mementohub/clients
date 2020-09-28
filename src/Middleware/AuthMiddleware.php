@@ -2,18 +2,19 @@
 
 namespace iMemento\Clients\Middleware;
 
-use GuzzleHttp\Middleware as GuzzleMiddleware;
 use Psr\Http\Message\RequestInterface;
 
 class AuthMiddleware
 {
+    protected $nextHandler;
     protected $method;
     protected $token;
 
-    public function __construct(string $method = 'none', $token = null)
+    public function __construct(callable $nextHandler, string $method = 'none', $token = null)
     {
-        $this->method = $method;
-        $this->token = $token;
+        $this->nextHandler = $nextHandler;
+        $this->method      = $method;
+        $this->token       = $token;
     }
 
     protected function shouldAuthenticate()
@@ -40,15 +41,14 @@ class AuthMiddleware
         return '';
     }
 
-    public function handler()
+    public function __invoke(RequestInterface $request, array $options)
     {
-        return GuzzleMiddleware::mapRequest(
-            function (RequestInterface $request) {
-                if (!$this->shouldAuthenticate()) {
-                    return $request;
-                }
-                return $request->withHeader('Authorization', 'Bearer ' . $this->token());
-            }
-        );
+        $fn = $this->nextHandler;
+
+        if (!$this->shouldAuthenticate()) {
+            return $fn($request, $options);
+        }
+
+        return $fn($request->withHeader('Authorization', 'Bearer ' . $this->token()), $options);
     }
 }

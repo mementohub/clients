@@ -2,17 +2,20 @@
 
 namespace iMemento\Clients\Middleware;
 
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Response;
 
 class ErrorMiddleware
 {
+    protected $nextHandler;
     protected $mode;
 
-    public function __construct(string $mode = 'critical')
+    public function __construct(callable $nextHandler, string $mode = 'critical')
     {
-        $this->mode = $mode;
+        $this->nextHandler = $nextHandler;
+        $this->mode        = $mode;
     }
 
     protected function shouldFail()
@@ -20,28 +23,26 @@ class ErrorMiddleware
         return ($this->mode != 'silent');
     }
 
-    public function handler()
+    public function __invoke(RequestInterface $request, array $options)
     {
-        return function (callable $handler) {
-            return function ($request, array $options) use ($handler) {
-                if ($this->shouldFail()) {
-                    // the default behaviour
-                    return $handler($request, $options);
-                }
+        $fn = $this->nextHandler;
 
-                $options['http_errors'] = false;
-                return $handler($request, $options)->then(
-                    function (ResponseInterface $response) use ($request, $handler) {
-                        $code = $response->getStatusCode();
-                        if ($code < 400) {
-                            return $response;
-                        }
-                        $exception = RequestException::create($request, $response);
-                        logger()->debug($exception->getMessage(), $exception->getTrace());
-                        return $response;
-                    }
-                );
-            };
-        };
+        if ($this->shouldFail()) {
+            // the default behaviour
+            return $fn($request, $options);
+        }
+
+        $options['http_errors'] = false;
+        return $fn($request, $options)->then(
+            function (ResponseInterface $response) use ($request, $fn) {
+                $code = $response->getStatusCode();
+                if ($code < 400) {
+                    return $response;
+                }
+                $exception = RequestException::create($request, $response);
+                logger()->debug($exception->getMessage(), $exception->getTrace());
+                return $response;
+            }
+        );
     }
 }

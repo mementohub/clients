@@ -2,10 +2,12 @@
 
 namespace iMemento\Clients\Middleware;
 
-use GuzzleHttp\Middleware as GuzzleMiddleware;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use iMemento\Clients\Responses\JsonResponse;
+use GuzzleHttp\Middleware as GuzzleMiddleware;
+use iMemento\Clients\Middleware\AuthMiddleware;
+use iMemento\Clients\Middleware\ErrorMiddleware;
 use iMemento\Clients\Responses\CollectionResponse;
 
 class Middleware
@@ -55,13 +57,15 @@ class Middleware
 
     public static function auth(string $method, $token = null)
     {
-        $middleware = new AuthMiddleware($method, $token);
-        return $middleware->handler();
+        return function (callable $handler) use ($method, $token) {
+            return new AuthMiddleware($handler, $method, $token);
+        };
     }
 
     public static function errors(string $mode)
     {
-        $middleware = new ErrorMiddleware($mode);
-        return $middleware->handler();
+        return function (callable $handler) use ($mode) {
+            return new ErrorMiddleware($handler, $mode);
+        };
     }
 }
