@@ -2,6 +2,7 @@
 
 namespace iMemento\Clients\Tests\Clients;
 
+use Illuminate\Foundation\Bus\PendingDispatch;
 use iMemento\Clients\AbstractClient;
 use iMemento\Clients\Events;
 use iMemento\Clients\Responses\JsonResponse;
@@ -16,15 +17,22 @@ class EventsTest extends TestCase
     /**
      * @dataProvider endpointMappingsDataProvider
      */
-    public function testItMakesTheRightCalls()
-    {
-        return $this->checkEndpointMappings(...func_get_args());
+    public function testItDispatchesEndpoints(
+        $method,
+        $arguments,
+        $expectedMethod,
+        $expectedPath
+    ) {
+        $base_uri = $this->client()->getBaseUri();
+
+        $response = $this->client()->{$method}(...$arguments);
+        $this->assertInstanceOf(PendingDispatch::class, $response);
     }
 
     public function endpointMappingsDataProvider()
     {
         return [
-            // ['emit', ['test'], 'POST', 'listen', JsonResponse::class],   // queued
+            ['emit', [['event' => 'test']], 'POST', 'listen'],   // queued
         ];
     }
 }

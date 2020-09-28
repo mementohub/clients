@@ -21,7 +21,6 @@ class QueueRequest implements ShouldQueue
 
     public function __construct($config, $request, $method, ...$args)
     {
-
         $this->config = $config;
         $this->request = $request;
         $this->method = $method;
