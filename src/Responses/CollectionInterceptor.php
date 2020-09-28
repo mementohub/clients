@@ -182,7 +182,7 @@ trait CollectionInterceptor
         return $this->toBase()->chunk($size);
     }
 
-    public function sort(callable $callback = null)
+    public function sort($callback = null)
     {
         return $this->toBase()->sort($callback);
     }
