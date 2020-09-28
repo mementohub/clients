@@ -42,13 +42,14 @@ class Middleware
         );
     }
 
-    public static function retries(int $allowed)
+    public static function retries(int $allowed, callable $delay = null)
     {
         return GuzzleMiddleware::retry(
             function ($retries, $request, ResponseInterface $response) use ($allowed) {
                 return (($response->getStatusCode() >= 400)
                     && ($retries < $allowed));
-            }
+            },
+            $delay
         );
     }
 

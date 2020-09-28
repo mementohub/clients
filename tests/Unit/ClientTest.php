@@ -136,7 +136,7 @@ class ClientTest extends TestCase
             new Response(200, [], '{}'),
         ]);
 
-        $client->retries(7)->call();
+        $client->retries(7, function () { return 100; })->call();
     }
 
     public function testItFailsAfterRetries()
@@ -149,7 +149,7 @@ class ClientTest extends TestCase
             new Response(200, [], '{}'),
         ]);
 
-        $client->retries(2)->call();
+        $client->retries(2, function () { return 100; })->call();
     }
 
     /**

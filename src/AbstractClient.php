@@ -169,9 +169,9 @@ abstract class AbstractClient
         return $this;
     }
 
-    public function retries(int $allowed)
+    public function retries(int $allowed, callable $delay = null)
     {
-        $this->middleware['retries'] = Middleware::retries($allowed);
+        $this->middleware['retries'] = Middleware::retries($allowed, $delay);
         return $this;
     }
 
