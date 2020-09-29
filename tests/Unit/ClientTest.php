@@ -146,7 +146,6 @@ class ClientTest extends TestCase
             new Response(400, [], '{}'),
             new Response(401, [], '{}'),
             new Response(402, [], '{}'),
-            new Response(200, [], '{}'),
         ]);
 
         $client->retries(2, function () { return 100; })->call();
