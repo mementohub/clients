@@ -7,6 +7,10 @@ use iMemento\Clients\Ratings;
 use iMemento\Clients\Responses\CollectionResponse;
 use iMemento\Clients\Responses\JsonResponse;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class RatingTest extends TestCase
 {
     protected function client(array $responses = []): AbstractClient

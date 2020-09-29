@@ -7,6 +7,10 @@ use iMemento\Clients\Translations;
 use iMemento\Clients\Responses\CollectionResponse;
 use iMemento\Clients\Responses\JsonResponse;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class TranslationsTest extends TestCase
 {
     protected function client(array $responses = []): AbstractClient

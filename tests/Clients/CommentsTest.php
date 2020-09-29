@@ -7,6 +7,10 @@ use iMemento\Clients\Comments;
 use iMemento\Clients\Responses\CollectionResponse;
 use iMemento\Clients\Responses\JsonResponse;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class CommentTest extends TestCase
 {
     protected function client(array $responses = []): AbstractClient

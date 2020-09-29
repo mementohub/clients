@@ -7,6 +7,10 @@ use iMemento\Clients\AbstractClient;
 use iMemento\Clients\Events;
 use iMemento\Clients\Responses\JsonResponse;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class EventsTest extends TestCase
 {
     protected function client(array $responses = []): AbstractClient

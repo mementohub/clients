@@ -7,6 +7,10 @@ use iMemento\Clients\Logs;
 use iMemento\Clients\Responses\CollectionResponse;
 use iMemento\Clients\Responses\JsonResponse;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class LogTest extends TestCase
 {
     protected function client(array $responses = []): AbstractClient

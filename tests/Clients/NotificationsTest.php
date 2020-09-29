@@ -6,6 +6,10 @@ use iMemento\Clients\AbstractClient;
 use iMemento\Clients\Notifications;
 use iMemento\Clients\Responses\JsonResponse;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class NotificationsTest extends TestCase
 {
     protected function client(array $responses = []): AbstractClient
