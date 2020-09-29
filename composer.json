@@ -10,16 +10,16 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "opis/closure": "^3.1",
-        "illuminate/support": "5.8.*",
-        "illuminate/contracts": "5.8.*",
+        "illuminate/support": "^6.0",
+        "illuminate/contracts": "^6.0",
         "guzzlehttp/guzzle": "^6.3",
-        "imemento/sdk-auth": "~5.8.0"
+        "imemento/sdk-auth": "~6.0.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0",
-        "orchestra/testbench": "3.8.*"
+        "phpunit/phpunit": "^8.0",
+        "orchestra/testbench": "^4.0"
     },
     "autoload": {
         "psr-4": {
