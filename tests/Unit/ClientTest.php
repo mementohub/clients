@@ -16,6 +16,10 @@ use iMemento\SDK\Auth\User;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
 class ClientTest extends TestCase
 {
     protected $handler;
