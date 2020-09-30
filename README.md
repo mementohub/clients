@@ -1,6 +1,7 @@
 # iMemento Clients
 
 [![Build Status](https://github.com/mementohub/clients/workflows/Testing/badge.svg)](https://github.com/mementohub/clients/actions)
+[![Docs Status](https://img.shields.io/readthedocs/imemento-clients)](https://imemento-clients.readthedocs.io)
 [![Latest Stable Version](https://img.shields.io/packagist/v/imemento/clients)](https://packagist.org/packages/imemento/clients)
 [![License](https://img.shields.io/packagist/l/imemento/clients)](https://packagist.org/packages/imemento/clients)
 [![Total Downloads](https://img.shields.io/packagist/dt/imemento/clients)](https://packagist.org/packages/imemento/clients)
